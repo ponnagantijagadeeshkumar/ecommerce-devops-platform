@@ -1,0 +1,32 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Logs
+*.log
+
+# Environment Files
+.env
+
+# IDE
+.vscode/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Kubernetes
+kubeconfig
+
+# Secrets
+*.pem
+*.key
+*.crt
+
+# Jenkins
+jenkins_home/
+
+# Terraform Variables
+terraform.tfvars
+*.auto.tfvars
