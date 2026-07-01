@@ -20,3 +20,19 @@ variable "public_subnets" {
 variable "private_subnets" {
   type = list(string)
 }
+
+variable "node_instance_type" {
+  type = string
+}
+
+variable "min_size" {
+  type = number
+}
+
+variable "desired_size" {
+  type = number
+}
+
+variable "max_size" {
+  type = number
+}

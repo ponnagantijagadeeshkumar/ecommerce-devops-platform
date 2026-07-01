@@ -30,3 +30,8 @@ jenkins_home/
 # Terraform Variables
 terraform.tfvars
 *.auto.tfvars
+
+*.tfplan
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
