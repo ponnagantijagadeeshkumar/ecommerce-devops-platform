@@ -1,11 +1,22 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "ecommerce-app"
+    }
+
     stages {
 
-        stage('Clone Code') {
+        stage('Clone Repository') {
             steps {
-                git 'https://github.com/ponnagantijagadeeshkumar/ecommerce-devops-platform'
+                git branch: 'main',
+                    url: 'https://github.com/ponnagantijagadeeshkumar/ecommerce-devops-platform'
+            }
+        }
+
+        stage('Verify Files') {
+            steps {
+                bat 'dir'
             }
         }
 
