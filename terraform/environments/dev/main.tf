@@ -30,11 +30,10 @@ module "eks" {
   max_size     = var.max_size
 }
 
-module "jenkins" {
-  source      = "../../modules/jenkins"
-  environment = var.environment
-
-  vpc_id    = module.vpc.vpc_id
-  subnet_id = module.vpc.public_subnet_ids[0]
-}
+#module "jenkins" {
+#  source      = "../../modules/jenkins"
+#  environment = var.environment
+#  vpc_id    = module.vpc.vpc_id
+#  subnet_id = module.vpc.public_subnet_ids[0]
+#}
 
