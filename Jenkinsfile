@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-    AWS_REGION = 'ap-south-1'
-    ECR_REGISTRY = '799918206960.dkr.ecr.ap-south-1.amazonaws.com'
-    ECR_REPOSITORY = 'ecommerce-dev'
-    IMAGE_NAME = 'ecommerce-app'
+        AWS_REGION = 'ap-south-1'
+        ECR_REGISTRY = '799918206960.dkr.ecr.ap-south-1.amazonaws.com'
+        ECR_REPOSITORY = 'ecommerce-dev'
+        IMAGE_NAME = 'ecommerce-app'
     }
 
     stages {
@@ -25,7 +25,12 @@ pipeline {
 
         stage('Check AWS Credentials') {
             steps {
-                bat 'aws sts get-caller-identity'
+                withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials']
+                ]) {
+                    bat 'aws sts get-caller-identity'
+                }
             }
         }
 
@@ -43,7 +48,7 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-            bat 'cd terraform\\environments\\dev && terraform plan'
+                bat 'cd terraform\\environments\\dev && terraform plan'
             }
         }
     }
