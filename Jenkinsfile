@@ -23,6 +23,12 @@ pipeline {
             }
         }
 
+        stage('Check AWS Credentials') {
+            steps {
+                bat 'aws sts get-caller-identity'
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 bat 'cd terraform\\environments\\dev && terraform init'
