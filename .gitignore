@@ -27,9 +27,6 @@ kubeconfig
 # Jenkins
 jenkins_home/
 
-# Terraform Variables
-terraform.tfvars
-*.auto.tfvars
 
 *.tfplan
 .terraform/
