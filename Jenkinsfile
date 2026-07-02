@@ -37,10 +37,14 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 withCredentials([
-                    [$class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'aws-credentials']
+                    [
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-credentials'
+                    ]
                 ]) {
                     bat '''
+                    echo AWS_ACCESS_KEY_ID=%AWS_ACCESS_KEY_ID%
+                    echo AWS_SECRET_ACCESS_KEY=%AWS_SECRET_ACCESS_KEY%
                     cd terraform\\environments\\dev
                     terraform init
                     '''
