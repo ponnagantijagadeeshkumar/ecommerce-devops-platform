@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = 'ap-south-1'
-        ECR_REGISTRY = '799918206960.dkr.ecr.ap-south-1.amazonaws.com'
+        AWS_REGION     = 'ap-south-1'
+        ECR_REGISTRY   = '799918206960.dkr.ecr.ap-south-1.amazonaws.com'
         ECR_REPOSITORY = 'ecommerce-dev'
-        IMAGE_NAME = 'ecommerce-app'
+        IMAGE_NAME     = 'ecommerce-app'
     }
 
     stages {
@@ -36,19 +36,43 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                bat 'cd terraform\\environments\\dev && terraform init'
+                withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials']
+                ]) {
+                    bat '''
+                    cd terraform\\environments\\dev
+                    terraform init
+                    '''
+                }
             }
         }
 
         stage('Terraform Validate') {
             steps {
-                bat 'cd terraform\\environments\\dev && terraform validate'
+                withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials']
+                ]) {
+                    bat '''
+                    cd terraform\\environments\\dev
+                    terraform validate
+                    '''
+                }
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                bat 'cd terraform\\environments\\dev && terraform plan'
+                withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials']
+                ]) {
+                    bat '''
+                    cd terraform\\environments\\dev
+                    terraform plan
+                    '''
+                }
             }
         }
 
@@ -59,15 +83,14 @@ pipeline {
                 docker build -t %IMAGE_NAME%:ci-latest .
                 '''
             }
-        
         }
 
         stage('Login to Amazon ECR') {
             steps {
-                withCredentials([[
-                    $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'aws-credentials'
-                ]]) {
+                withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials']
+                ]) {
                     bat '''
                     aws ecr get-login-password --region %AWS_REGION% | docker login --username AWS --password-stdin %ECR_REGISTRY%
                     '''
@@ -92,5 +115,6 @@ pipeline {
                 '''
             }
         }
+
     }
 }
