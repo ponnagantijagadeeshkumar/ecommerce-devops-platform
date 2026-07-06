@@ -120,5 +120,57 @@ pipeline {
             }
         }
 
+        stage('Configure Kubernetes') {
+            steps {
+                withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials']
+                ]) {
+                    bat '''
+                    aws eks update-kubeconfig --region %AWS_REGION% --name ecommerce-dev-cluster
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Amazon EKS') {
+            steps {
+                bat '''
+                kubectl set images deployment/ecommerce-app ecommerce-app=%ECR_REGISTRY%/%ECR_REPOSITORY%:%BUILD_NUMBER%
+                '''
+            }
+        }
+
+        stage('Wait for Rollout') {
+            steps {
+                bat '''
+                kubectl rollout status deployment/ecommerce-app
+                '''
+            }
+        }
+
+        stage('Verify Pods') {
+            steps {
+                bat '''
+                kubectl get pods -o wide
+                '''
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                bat '''
+                kubectl get deployment ecommerce-app
+                '''
+            }
+        }
+
+        stage ('Check Running Image') {
+            steps {
+                bat '''
+                kubectl describe deployment ecommerce-app
+                '''
+            }
+        }
     }
 }
